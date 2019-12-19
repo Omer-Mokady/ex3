@@ -1,22 +1,9 @@
 #include <iostream>
-
-int main() {
-  std::cout << "Hello, World!" << std::endl;
-  std::cout << "Hello, World!" << std::endl;
-  std::cout << "Hello, World!" << std::endl;
-  std::cout << "Hello, World!" << std::endl;
-  std::cout << "Hello, World!" << std::endl;
-  std::cout << "Hello, World!" << std::endl;
-  std::cout << "Hello, World!" << std::endl;
-  std::cout << "Hello, World!" << std::endl;
-  std::cout << "Hello, World!" << std::endl;;
-  std::cout << "Hello, World!" << std::endl;
-  std::cout << "Hello, World!" << std::endl;
-  std::cout << "Hello, World!" << std::endl;
-  std::cout << "Hello, World!" << std::endl;
-  std::cout << "Hello, World!" << std::endl;
-  std::cout << "Hello, World 2!" << std::endl;
-
-
+#include <fstream>
+#include <list>
+#include "Command.h"
+#include "CommandTypes.h"
+using namespace std;
+int main(int argc, char *argv[]) {
   return 0;
 }
