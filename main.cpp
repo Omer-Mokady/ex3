@@ -1,9 +1,17 @@
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <algorithm>
 
-int main() {
-  std::cout << "Hello, World!" << std::endl;
-  std::cout << "Hello, World!" << std::endl;
-  std::cout << "Hello, World!" << std::endl;
+#include "Parser.h"
+
+using namespace std;
+
+
+int main(int argc, char* argv[]) {
+  Parser pars = Parser(argv[1]);
+  vector<string> lexer = pars.makeLexer(argv[1]);
 
   return 0;
 }
