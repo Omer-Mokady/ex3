@@ -9,6 +9,9 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <unordered_map>
+#include "Command.h"
+#include "ConnectCommand.h"
 
 using namespace std;
 
@@ -21,7 +24,8 @@ class Parser {
   Parser(string addressFile);
   string deleteSpaces(string str);
   vector<string> makeLexer(string address);
-
+  void runParser();
+  unordered_map<string, Command *> initCommandMap();
 };
 
 #endif //EX3_NEW__PARSER_H_

@@ -3,11 +3,14 @@
 //
 
 #include "Parser.h"
+#include "Command.h"
+#include "ConnectCommand.h"
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <unordered_map>
 
 using namespace std;
 
@@ -116,4 +119,23 @@ vector<string> Parser::makeLexer(string address) {
   }
   fs.close();
   return lexer;
+}
+
+unordered_map<string, Command*> Parser::initCommandMap() {
+  unordered_map<string, Command*> commandsMap;
+  Command* connectCommandV = new ConnectCommand();
+  commandsMap["connectCommandV"] = connectCommandV;
+
+
+  return commandsMap;
+}
+
+
+
+void Parser::runParser() {
+  vector<string> lexer= makeLexer(this->addressFile);
+  unordered_map<string, Command *> commandsMap = initCommandMap();
+  cout << "check" << endl;
+
+
 }

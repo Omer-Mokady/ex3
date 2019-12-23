@@ -8,3 +8,6 @@ int ConnectCommand::execute() {
   cout << "ConnectComannd execute" << endl;
   return 3;
 }
+ConnectCommand::ConnectCommand() {
+
+}
