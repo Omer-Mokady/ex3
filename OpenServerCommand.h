@@ -11,7 +11,11 @@ class OpenServerCommand : public Command {
   void readFile(const int i);
   int execute();
   ~OpenServerCommand() {};
+  int openSocket();
+  void listener();
  private:
+  int serverSocketNumber;
+  int clientSocketNumber;
   int portNumber;
   string ipNumber = "0.0.0.0";
 };
