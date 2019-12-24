@@ -10,7 +10,7 @@
 using namespace std;
 class Command {
  public:
-  virtual int execute() = 0;
+  virtual int execute(vector<string>::iterator) = 0;
   virtual ~Command() {};
  protected:
   vector<string> lexerArray;

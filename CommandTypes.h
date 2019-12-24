@@ -18,7 +18,7 @@ class OpenServerCommand : public Command {
   OpenServerCommand(int portNumber);
   OpenServerCommand(string portNumber);
   int calculate(string expression); //need to import all ex1.
-  int execute();
+  int execute(vector<string>::iterator);
   ~OpenServerCommand() {};
  private:
   int portNumber;

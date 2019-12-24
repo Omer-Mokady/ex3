@@ -11,7 +11,7 @@ class ConnectCommand : public Command {
  public:
   ConnectCommand();
   ~ConnectCommand() {};
-  int execute();
+  int execute(vector<string>::iterator);
 
 };
 

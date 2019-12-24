@@ -7,9 +7,10 @@
 #include "Command.h"
 class OpenServerCommand : public Command {
  public:
+  OpenServerCommand();
   OpenServerCommand(string portNumber);
   void readFile(const int i);
-  int execute();
+  int execute(vector<string>::iterator);
   ~OpenServerCommand() {};
  private:
   int portNumber;

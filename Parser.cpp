@@ -5,6 +5,9 @@
 #include "Parser.h"
 #include "Command.h"
 #include "ConnectCommand.h"
+#include "OpenServerCommand.h"
+#include "DefineVarCommand.h"
+#include "Singleton.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -124,7 +127,11 @@ vector<string> Parser::makeLexer(string address) {
 unordered_map<string, Command*> Parser::initCommandMap() {
   unordered_map<string, Command*> commandsMap;
   Command* connectCommandV = new ConnectCommand();
-  commandsMap["connectCommandV"] = connectCommandV;
+  commandsMap["connectControlClient"] = connectCommandV;
+  Command* OpenServerCommandV = new OpenServerCommand();
+  commandsMap["openDataServer"] = OpenServerCommandV;
+  Command* DefineVarCommandV = new DefineVarCommand();
+  commandsMap["var"] = DefineVarCommandV;
 
 
   return commandsMap;
@@ -133,9 +140,30 @@ unordered_map<string, Command*> Parser::initCommandMap() {
 
 
 void Parser::runParser() {
+  int index=0;
+//  Singleton* s = Singleton::getInstance();
   vector<string> lexer= makeLexer(this->addressFile);
   unordered_map<string, Command *> commandsMap = initCommandMap();
+//  unordered_map<string, Command *>::iterator cMapIt;
+  vector<string>::iterator it = lexer.begin();
+//  std::advance( it, index );
+//  /*
+  while(index<lexer.size()) {
+    cout << "index: " << index << endl;
+    cout << lexer[index] << endl;
+//    cMapIt = commandsMap.find(lexer[index]);
+    if(commandsMap.find(lexer[index]) == commandsMap.end()){
+      cout << "not in the map" << endl;
+      break;
+
+    }
+    Command* c = commandsMap.at(lexer[index]);
+    index+=c->execute(it);
+    advance( it, index );
+  }
+//   */
   cout << "check" << endl;
+
 
 
 }

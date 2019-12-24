@@ -12,6 +12,7 @@
 #include <fstream>
 #include "Expression.h"
 #include "Interpreter.h"
+// to delete
 OpenServerCommand::OpenServerCommand(string port) {
   Expression *e;
   Interpreter *i = new Interpreter();
@@ -19,14 +20,28 @@ OpenServerCommand::OpenServerCommand(string port) {
   this->portNumber = (int) e->calculate();
 }
 
-int OpenServerCommand::execute() { //starting a thread where the server is listening on.
+OpenServerCommand::OpenServerCommand() {
+
+}
+
+int OpenServerCommand::execute(vector<string>::iterator it) { //starting a thread where the server is listening on.
+  cout << "OpenServerCommand execute check" << endl;
+  string value = *(it+1);
+  cout << "value in iterator: " << value << endl;
+
+  Expression *e;
+  Interpreter *i = new Interpreter();
+  e = i->interpret(value);
+  this->portNumber = (int) e->calculate();
+
+
+
 
   int socketfd = socket(AF_INET, SOCK_STREAM, 0);
   if (socketfd == -1) {
     cerr << "Could not create a socket" << endl;
     return -1;
   }
-
   sockaddr_in address;
   address.sin_family = AF_INET;
   address.sin_addr.s_addr = INADDR_ANY;
