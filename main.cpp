@@ -10,8 +10,16 @@ using namespace std;
 
 
 int main(int argc, char* argv[]) {
+
+
+
+
+
+
   Singleton* s = Singleton::getInstance();
-  s->checkMap["maincheck"]=2345;
+//      cout << "value is: " << s->simToIndexTable["/sim/time/warp"] << endl;
+
+
   Parser pars = Parser(argv[1]);
   vector<string> lexer = pars.makeLexer(argv[1]);
   pars.runParser();

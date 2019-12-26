@@ -6,7 +6,9 @@
 #define EX3_NEW__SINGLETON_H_
 #include <string.h>
 #include <unordered_map>
+#include <map>
 #include "Var.h"
+#include "Interpreter.h"
 using namespace std;
 
 
@@ -20,8 +22,10 @@ class Singleton {
   Singleton();
 
  public:
-  unordered_map<string, Var> simTable;
-  unordered_map<string, Var> symbolTable;
+  map<int, Var*> indexToVarTable;
+  unordered_map<string, int> simToIndexTable;
+  unordered_map<string, pair <string, float>> symbolTable;
+  Interpreter *interpreter = new Interpreter();
 
 
   /* Static access method. */
