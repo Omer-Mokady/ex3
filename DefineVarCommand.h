@@ -8,7 +8,9 @@
 #include <iostream>
 class DefineVarCommand : public Command {
  public:
-  int execute();
+  DefineVarCommand();
+  int execute(vector<string>::iterator);
+
 };
 
 #endif //EX3_NEW__DEFINEVARCOMMAND_H_
