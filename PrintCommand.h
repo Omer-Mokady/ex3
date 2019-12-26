@@ -4,9 +4,14 @@
 
 #ifndef EX3_NEW__PRINTCOMMAND_H_
 #define EX3_NEW__PRINTCOMMAND_H_
-
-class PrintCommand {
-
+#include "Command.h"
+#include <iostream>
+#include <string>
+class PrintCommand : public Command {
+ public:
+  PrintCommand();
+  ~PrintCommand() {};
+  int execute(vector<string>::iterator);
 };
 
 #endif //EX3_NEW__PRINTCOMMAND_H_

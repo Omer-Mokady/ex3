@@ -113,7 +113,6 @@ void OpenServerCommand::listener() { //this is the thread that actually listenin
       cout << flightValues.at(k) << " ";
     }
   }
-
-  cout << endl;
+  cout << "updated 26.12 19:00" << endl;
 
 }

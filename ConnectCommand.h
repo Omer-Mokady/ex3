@@ -12,7 +12,12 @@ class ConnectCommand : public Command {
   ConnectCommand();
   ~ConnectCommand() {};
   int execute(vector<string>::iterator);
-
+  int openSocket();
+  void sender();
+ private:
+  string ipNumber;
+  int clientSocketNumber;
+  int serverPortNumber;
 };
 
 #endif //EX3_NEW__CONNECTCOMMAND_H_
