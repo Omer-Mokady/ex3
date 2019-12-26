@@ -13,15 +13,16 @@ class Var {
 
  public:
   Var(string name, string direction, string sim);
+  Var(string sim);
   Var();
 
 
   string sim;
  string name;
   string direction;
- string value;
+ float value;
 
-
+  void setSim(string sim1);
 };
 
 #endif //EX3_NEW__VAR_H_
