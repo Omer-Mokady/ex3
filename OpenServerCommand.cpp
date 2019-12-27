@@ -25,11 +25,14 @@ int OpenServerCommand::execute(vector<string>::iterator it) { //starting a threa
   cout << "OpenServerCommand execute check" << endl;
   string value = *(it + 1);
   cout << "value in iterator: " << value << endl;
-
-  Expression *e;
+  Expression *exp;
   Interpreter *i = new Interpreter();
-  e = i->interpret(value);
-  this->portNumber = (int) e->calculate();
+  try {
+    exp = i->interpret(value);
+    this->portNumber = (int) exp->calculate();
+  } catch (const char *e) {
+    cout << e << endl;
+  }
 
   thread openServer([this] { openSocket(); });
   openServer.join(); //wait until someone (the simulator) will connect to the socket, and continue only afterward - therefore we need thread.join().
@@ -71,14 +74,14 @@ int OpenServerCommand::openSocket() { //this thread is opening a server and wait
 }
 
 void OpenServerCommand::listener() { //this is the thread that actually listening to the simulator and updating vector & map values accordingly.
+  Singleton *instance = Singleton::getInstance();
   int socketNumber = this->clientSocketNumber;
+  map<int, Var *>::iterator mapIterator; // creates iterator based on IndexToVarTable map from Singleton.
+  mapIterator = instance->indexToVarTable.begin();
   vector<float> flightValues(36);
   vector<float>::iterator it = flightValues.begin();
   string firstBuffer = "";
-  Singleton *s = Singleton::getInstance();
-  size_t index;
-  int temp = 0;
-  while (temp < 1000) { ///////////////////////////////////////////////////////////////replace this line.
+  while (instance->runTreads) {
     char line[1024] = {0};
     read(socketNumber, line, 1024);
     string secondBuffer = line;
@@ -88,31 +91,75 @@ void OpenServerCommand::listener() { //this is the thread that actually listenin
                                             firstBuffer.length()); // here we will have the string pass the \n.
     //separate firstToken by "," and update the map and the vector.
     stringstream ss(firstToken);
-    cout << "\ndata from sim: \n";
-    cout << firstBuffer << endl;
+//    cout << "\ndata from sim: \n";
+//    cout << firstBuffer << endl;
+    /**
+     * the next block is trying to update the map due to the incoming values from the simulator while reading it.
+     */
     while (ss.good()) {
       string subStr;
       getline(ss, subStr, ',');
-      Expression *e;
-      Interpreter *inter = new Interpreter();
-      e = inter->interpret(subStr);
-
-      double val = e->calculate();
-      if (it != flightValues.end()) {
-        /////////////////////////////////////////////////////////////here we will update our maps
+      Expression *exp;
+      Interpreter *inter = instance->interpreter;
+      double val;
+      try {
+        exp = inter->interpret(subStr);
+        val = exp->calculate();
+      } catch (const char *e) {
+        cout << e << endl;
       }
       *it = val;
+      if (it != flightValues.end()) {
+        if (strcmp(((*mapIterator).second->name).c_str(), "") != 0) {
+          ostringstream valueAsStream;
+          valueAsStream << (*it);
+          string valueAsStr = (valueAsStream.str()).c_str();
+          // the next line is updating the interpreter if needed.
+          try {
+            inter->setVariables(((*mapIterator).second->name) + "=" + valueAsStr);
+          }
+          catch (const char *e) {
+            cout << e << endl;
+          }
+          (*mapIterator).second->value = *it;
+        }
+        if (strcmp(((*mapIterator).second->name).c_str(), "<-") != 0) {
+          (*mapIterator).second->value = *it;
+        }
+      }
       advance(it, 1);
-//      flightValues.at(*(it + index)) = val;
-//      index++;
+      advance(mapIterator, 1);
     }
+
+
+//    //////////////////////////start of updating map.
+//    it = flightValues.begin();
+//    while (mapIterator != instance->indexToVarTable.end()) {
+//      if (strcmp(((*mapIterator).second->name).c_str(), "") != 0) {
+//        ostringstream valueAsStream;
+//        valueAsStream << (*it);
+//        string valueAsStr = (valueAsStream.str()).c_str();
+//        // the next line is updating the interpreter if needed.
+//        instance->interpreter->setVariables(((*mapIterator).second->name) + "=" + valueAsStr);
+//      }
+//      (*mapIterator).second->value = *it;
+//      advance(it, 1);
+//      advance(mapIterator, 1);
+//    }
+//
+//    //////////////////////////end of updating map.
+
+    //reinitialize the iterators to begin.
     it = flightValues.begin();
+    mapIterator = instance->indexToVarTable.begin();
+
     firstBuffer = secondToken; //this is the last line of the loop - DO NOT CHANGE IT
-    cout << "flight values vector:\n";
-    for (int k = 0; k < 36; k++) {
-      cout << flightValues.at(k) << " ";
-    }
+
+//    //test block
+//    cout << "flight values vector:\n";
+//    for (int k = 0; k < 36; k++) {
+//      cout << flightValues.at(k) << " ";
+//    }
   }
-  cout << "updated 26.12 19:00" << endl;
 
 }

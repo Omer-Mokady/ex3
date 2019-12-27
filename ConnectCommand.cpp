@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include "Singleton.h"
 
 using namespace std;
 ConnectCommand::ConnectCommand() {
@@ -17,6 +18,7 @@ ConnectCommand::ConnectCommand() {
 }
 
 int ConnectCommand::execute(vector<string>::iterator it) {
+  Singleton *instance = Singleton::getInstance();
   cout << "in ConnectCommand execute....." << endl;
   string value1 = *(it + 1); //ip
   if (value1.at(0) == '"' && value1.at(value1.length() - 1) == '"') {
@@ -24,7 +26,9 @@ int ConnectCommand::execute(vector<string>::iterator it) {
   }
   this->ipNumber = value1;
   string value2 = *(it + 2); //port number
-  this->serverPortNumber = stoi(value2);
+  Expression *port = nullptr;
+  port = instance->interpreter->interpret(value2);
+  this->serverPortNumber = (int) port->calculate();
   cout << "iteraor value1: " << value1 << endl;
   cout << "iteraor value2: " << value2 << endl;
 
@@ -32,7 +36,7 @@ int ConnectCommand::execute(vector<string>::iterator it) {
   openServer.join(); //wait until someone (the simulator) will connect to the socket, and continue only afterward - therefore we need thread.join().
   thread listenThread([this] { sender(); });
   listenThread.detach();
-  this_thread::sleep_for(30s);
+  this_thread::sleep_for(50s);
   return 3;
 }
 
@@ -60,11 +64,40 @@ int ConnectCommand::openSocket() {
   return 0;
 }
 void ConnectCommand::sender() {
-  char msg[] = "1";
-  int is_send = send(this->clientSocketNumber, msg, strlen(msg), 0);
-  if (is_send == -1) {
-    cout << "Error sending message." << endl;
-  } else {
-    cout << "message sent to server." << endl;
+  Singleton *instance = Singleton::getInstance();
+  map<int, Var *>::iterator it; // creates iterator based on IndexToVarTable map from Singleton.
+  it = instance->indexToVarTable.begin();
+  while (instance->runTreads) { // run as long as the boolean Singleton flag is true.
+    while (it != instance->indexToVarTable.end()) { // iterate all over the singleton map.
+      if (strcmp((*it).second->direction.c_str(), "->") == 0) { // check direction.
+        cout << "-------------------------------------\n";
+        cout << "need to update " << (*it).second->name;
+        ostringstream valueToSend;
+        valueToSend << (*it).second->value; // turning the float value to string stream.
+        string valueAsStr = valueToSend.str();
+        cout << " with the value of " << valueAsStr << "\n\n";
+        string sim = (*it).second->sim;
+        string whiteSpace = " ";
+        string test = sim + whiteSpace + valueAsStr;
+        char msg[test.length() + 1];
+        strcpy(msg, test.c_str());
+
+        cout << "we tried to send to the simulator: " << msg << endl; // test line.
+
+        int is_send =
+            send(this->clientSocketNumber, msg, strlen(msg), 0); // trying to send the message to the simulator.
+        if (is_send == -1) {
+          cout << "Error sending message." << endl;
+        } else {
+          cout << "message sent to server." << endl;
+          cout << "-------------------------------------\n";
+        }
+      } else if (strcmp((*it).second->direction.c_str(), "") == 0) {
+//        cout << "Error, variable with no direction!" << endl; // test line.
+      }
+      advance(it, 1);
+    }
+    it = instance->indexToVarTable.begin();
   }
+
 }
