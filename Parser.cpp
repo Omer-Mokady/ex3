@@ -8,6 +8,7 @@
 #include "OpenServerCommand.h"
 #include "DefineVarCommand.h"
 #include "Singleton.h"
+#include "PrintCommand.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -130,8 +131,11 @@ unordered_map<string, Command*> Parser::initCommandMap() {
   commandsMap["connectControlClient"] = connectCommandV;
   Command* OpenServerCommandV = new OpenServerCommand();
   commandsMap["openDataServer"] = OpenServerCommandV;
-  Command* DefineVarCommandV = new DefineVarCommand();
-  commandsMap["var"] = DefineVarCommandV;
+  Command* defineVarCommandV = new DefineVarCommand();
+  commandsMap["var"] = defineVarCommandV;
+//  Command* printCommandV = new PrintCommand();
+//  commandsMap["Print"] = printCommandV;
+  //insert sleepCommand
 
 
 
@@ -166,7 +170,7 @@ int counter=0;
     Command* c = nullptr;
 
     // to delete:
-    while(lexer[index] == "Print" || lexer[index] == "Sleep") {
+    while(lexer[index] == "Print" || lexer[index] == "Sleep" || lexer[index] == "while" || lexer[index] == "if" || lexer[index] == "{" || lexer[index] == "}") {
       cout << lexer[index] << endl;
       index+=2;
       advance( it, 2 );
