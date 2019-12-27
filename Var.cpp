@@ -11,9 +11,11 @@ Var::Var(string name1, string direction1, string sim1){
 }
 Var::Var(string sim1){
   this->sim = sim1;
+  this->name = "";
 }
 Var::Var(){
   this->value = 0;
+  this->name = "";
 
 }
 
