@@ -66,7 +66,9 @@ int DefineVarCommand::execute(vector<string>::iterator it) {
     // get value from somrething that exist.
     //check if it exist
     if(s->symbolTable.find(strName) == s->symbolTable.end()) {
+
       cout << "var isn't exists in the symboyTable Map" << endl;
+      //ff
     } else {
       // remove spaces from string value
       string::iterator endP = remove(strValue.begin(), strValue.end(), ' ');

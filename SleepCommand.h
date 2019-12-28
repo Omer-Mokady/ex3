@@ -10,10 +10,11 @@
 #include "Expression.h"
 #include "Interpreter.h"
 
-class SleepCommand {
-  SleepCommand();
+class SleepCommand : public Command {
   ~SleepCommand() {};
   int execute(vector<string>::iterator);
+ public:
+  SleepCommand();
 };
 
 #endif //EX3_NEW__SLEEPCOMMAND_H_

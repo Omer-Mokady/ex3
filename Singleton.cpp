@@ -3,6 +3,13 @@
 //
 
 #include "Singleton.h"
+#include "ConnectCommand.h"
+#include "OpenServerCommand.h"
+#include "DefineVarCommand.h"
+#include "WhileCommand.h"
+#include "PrintCommand.h"
+#include "SleepCommand.h"
+#include "IfCommand.h"
 /* Null, because instance will be initialized on demand. */
 Singleton* Singleton::instance = 0;
 
@@ -18,6 +25,23 @@ Singleton* Singleton::getInstance()
 
 Singleton::Singleton()
 {
+  Command* connectCommandV = new ConnectCommand();
+  this->commandsMap["connectControlClient"] = connectCommandV;
+  Command* OpenServerCommandV = new OpenServerCommand();
+  this->commandsMap["openDataServer"] = OpenServerCommandV;
+  Command* defineVarCommandV = new DefineVarCommand();
+  this->commandsMap["var"] = defineVarCommandV;
+  Command* printCommandV = new PrintCommand();
+  this->commandsMap["Print"] = printCommandV;
+  Command* sleepCommandV = new SleepCommand();
+  this->commandsMap["Sleep"] = sleepCommandV;
+  Command* whileCommandV = new WhileCommand();
+  this->commandsMap["while"] = whileCommandV;
+  Command* ifCommandV = new IfCommand();
+  this->commandsMap["if"] = ifCommandV;
+
+
+
   // create simToInsex table and IndexToVar table
   int counter = 0;
 

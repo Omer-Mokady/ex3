@@ -9,6 +9,7 @@
 #include <map>
 #include "Var.h"
 #include "Interpreter.h"
+#include "Command.h"
 using namespace std;
 
 
@@ -26,6 +27,8 @@ class Singleton {
   unordered_map<string, int> simToIndexTable;
   unordered_map<string, pair <string, float>> symbolTable;
   Interpreter *interpreter = new Interpreter();
+  unordered_map<string, Command*> commandsMap;
+  bool runTreads = true;
 
 
   /* Static access method. */

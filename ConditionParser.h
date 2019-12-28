@@ -9,9 +9,11 @@
 
 class ConditionParser: public Command {
  protected:
-  list<Command*> commandList;
+  list<Command*> makeCommandList(vector<string>::iterator);
+  bool checkCondition(string condition);
+
  public:
-  int execute(vector<string>::iterator);
+//  virtual int execute(vector<string>::iterator);
 
 
 };
