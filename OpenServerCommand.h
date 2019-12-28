@@ -8,12 +8,12 @@
 class OpenServerCommand : public Command {
  public:
   OpenServerCommand();
-  OpenServerCommand(string portNumber);
-  void readFile(const int i);
   int execute(vector<string>::iterator);
   ~OpenServerCommand() {};
   int openSocket();
   void listener();
+  void mapValuesCheck();
+  void interpreterCheck();
  private:
   int serverSocketNumber;
   int clientSocketNumber;

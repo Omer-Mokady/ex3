@@ -27,16 +27,23 @@ int ConnectCommand::execute(vector<string>::iterator it) {
   this->ipNumber = value1;
   string value2 = *(it + 2); //port number
   Expression *port = nullptr;
-  port = instance->interpreter->interpret(value2);
-  this->serverPortNumber = (int) port->calculate();
-  cout << "iteraor value1: " << value1 << endl;
-  cout << "iteraor value2: " << value2 << endl;
+  try {
+    port = instance->interpreter->interpret(value2);
+    this->serverPortNumber = (int) port->calculate();
+  } catch (const char *e) {
+    cout << e << endl;
+    cout << "exception in ConnectCommand.execute()" << endl;
+  }
+
+//  cout << "iteraor value1: " << value1 << endl;
+//  cout << "iteraor value2: " << value2 << endl;
 
   thread openServer([this] { openSocket(); });
   openServer.join(); //wait until someone (the simulator) will connect to the socket, and continue only afterward - therefore we need thread.join().
   thread listenThread([this] { sender(); });
   listenThread.detach();
-  this_thread::sleep_for(50s);
+  cout << "done with Connect Command threads." << endl;
+
   return 3;
 }
 
@@ -70,30 +77,34 @@ void ConnectCommand::sender() {
   while (instance->runTreads) { // run as long as the boolean Singleton flag is true.
     while (it != instance->indexToVarTable.end()) { // iterate all over the singleton map.
       if (strcmp((*it).second->direction.c_str(), "->") == 0) { // check direction.
-        cout << "-------------------------------------\n";
-        cout << "need to update " << (*it).second->name;
+//        cout << "-------------------------------------\n";
+//        cout << "need to update " << (*it).second->name;
         ostringstream valueToSend;
         valueToSend << (*it).second->value; // turning the float value to string stream.
-        string valueAsStr = valueToSend.str();
-        cout << " with the value of " << valueAsStr << "\n\n";
+        string setCommand = "set ";
         string sim = (*it).second->sim;
         string whiteSpace = " ";
-        string test = sim + whiteSpace + valueAsStr;
-        char msg[test.length() + 1];
-        strcpy(msg, test.c_str());
+        string valueAsStr = valueToSend.str();
+        valueAsStr.append("\r\n");
+//        cout << " with the value of " << valueAsStr << "\r\n";
+        string final_message = "";
+        final_message.append(setCommand);
+        final_message.append(sim);
+        final_message.append(whiteSpace);
+        final_message.append(valueAsStr);
+        char msg[final_message.length() + 1];
+        strcpy(msg, final_message.c_str());
 
-        cout << "we tried to send to the simulator: " << msg << endl; // test line.
+//        cout << "we tried to send to the simulator: " << msg << endl; // test line.
 
         int is_send =
             send(this->clientSocketNumber, msg, strlen(msg), 0); // trying to send the message to the simulator.
         if (is_send == -1) {
           cout << "Error sending message." << endl;
         } else {
-          cout << "message sent to server." << endl;
-          cout << "-------------------------------------\n";
+//          cout << "message sent to server." << endl;
+//          cout << "-------------------------------------\n";
         }
-      } else if (strcmp((*it).second->direction.c_str(), "") == 0) {
-//        cout << "Error, variable with no direction!" << endl; // test line.
       }
       advance(it, 1);
     }

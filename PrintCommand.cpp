@@ -17,20 +17,23 @@ int PrintCommand::execute(vector<string>::iterator it) {
   if (msgToPrint.at(0) == '"' && msgToPrint.at(msgToPrint.length() - 1) == '"') { // *(it+1) = "string", print it.
     msgToPrint = msgToPrint.substr(1, msgToPrint.length() - 2);
     cout << msgToPrint << endl;
+    if (strcmp(msgToPrint.c_str(), "waiting 2 minutes for gui") == 0) {
+
+    }
   } else { //we have an expression we want to print - calculate it.
     string value = *(it + 1);
     cout << "value in iterator: " << value << endl;
-    Expression *exp;
-    Interpreter *i = instance->interpreter;
+    Expression *exp = nullptr;
     try {
-      exp = i->interpret(value);
+      exp = instance->interpreter->interpret(value);
       cout << exp->calculate() << endl;
     } catch (const char *e) {
       cout << e << endl;
+      cout << "thrown in print command of " << msgToPrint << endl;
     }
   }
-  if (strcmp(msgToPrint.c_str(), "done") == 0) {
-    instance->runTreads = false;
-  }
+//  if (strcmp(msgToPrint.c_str(), "done") == 0) {
+//    instance->runTreads = false;
+//  }
   return 2;
 }
