@@ -36,7 +36,16 @@ int IfCommand::execute(vector<string>::iterator it) {
       }
     }
   }
-  return counter+1;
+  int stepsToEnd = 0;
+  while(*(it+stepsToEnd) != "}") {
+    stepsToEnd++;
+  }
+  return stepsToEnd+1;
 
-  return 0;
+
+
+
+
+
+
 }
