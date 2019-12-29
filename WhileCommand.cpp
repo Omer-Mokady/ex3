@@ -3,6 +3,7 @@
 //
 
 #include "WhileCommand.h"
+#include "Singleton.h"
 #include <iostream>
 using namespace std;
 
@@ -11,6 +12,7 @@ WhileCommand::WhileCommand() {
 
 }
 int WhileCommand::execute(vector<string>::iterator it) {
+  Singleton* s = Singleton::getInstance();
   int counter = 3;
   list<Command*> CommandList = makeCommandList(it);
   list<Command*>::iterator listItr;
@@ -18,6 +20,7 @@ int WhileCommand::execute(vector<string>::iterator it) {
     cout << "list size: " << CommandList.size() << endl;
     while(checkCondition(*(it+1))) {
       cout << "start while from start" << endl;
+      cout << "value in rpm" << s->indexToVarTable[35]->value << endl;
 
       listItr = CommandList.begin();
       counter = 3;
@@ -38,5 +41,9 @@ int WhileCommand::execute(vector<string>::iterator it) {
         }
       }
     }
-  return counter+1;
+    int stepsToEnd = 0;
+    while(*(it+stepsToEnd) != "}") {
+      stepsToEnd++;
+    }
+  return stepsToEnd+1;
 }
