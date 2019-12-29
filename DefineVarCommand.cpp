@@ -67,7 +67,7 @@ int DefineVarCommand::execute(vector<string>::iterator it) {
     //check if it exist
     if(s->symbolTable.find(strName) == s->symbolTable.end()) {
 
-      cout << "var isn't exists in the symboyTable Map" << endl;
+      cout << "var isn't exists in the symbolTable Map" << endl;
       //ff
     } else {
       // remove spaces from string value
@@ -87,6 +87,7 @@ int DefineVarCommand::execute(vector<string>::iterator it) {
       s->symbolTable[strName].second = floatValue;
       // insert  value to Var
       s->indexToVarTable[index]->value = floatValue;
+      s->indexToVarTable[index]->hasValue = true;
       // update global iterpreter
       tempStr = strName + "=" + to_string(floatValue);
       std::cout << "strName for interpreter is: "  << tempStr << std::endl;

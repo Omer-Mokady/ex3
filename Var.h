@@ -21,6 +21,7 @@ class Var {
  string name;
   string direction;
  float value;
+ bool hasValue = false;
 
   void setSim(string sim1);
 };
