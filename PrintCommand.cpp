@@ -20,22 +20,14 @@ int PrintCommand::execute(vector<string>::iterator it) {
 
   } else { //we have an expression we want to print - calculate it.
     string value = *(it + 1);
-//    cout << "value in iterator: " << value << endl;
     Expression *exp = nullptr;
     try {
       exp = instance->interpreter->interpret(value);
-//      cout << exp->calculate() << endl;
-//      if (exp->calculate() > 0) {
-//
-//      }
+      cout << exp->calculate() << endl;
     } catch (const char *e) {
       cout << e << endl;
       cout << "thrown in print command of " << msgToPrint << endl;
     }
-  }
-  if (strcmp(msgToPrint.c_str(), "done") == 0) {
-//    cout << "done" << endl;
-    instance->runTreads = false;
   }
   return 2;
 }

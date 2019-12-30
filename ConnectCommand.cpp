@@ -7,7 +7,6 @@
 #include <sys/socket.h>
 #include <string.h>
 #include <iostream>
-#include <unistd.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include "Singleton.h"
@@ -46,15 +45,16 @@ int ConnectCommand::execute(vector<string>::iterator it) {
 }
 
 int ConnectCommand::openSocket() {
+  Singleton *instance = Singleton::getInstance();
   int client_socket = socket(AF_INET, SOCK_STREAM, 0);
   if (client_socket == -1) {
     cerr << "Could not create a socket" << endl;
     return -1;
   }
   this->clientSocketNumber = client_socket;
+  instance->clientSocketNumber = client_socket;
   sockaddr_in address;
   const char *validIP = this->ipNumber.c_str();
-//  cout << "ip sent to server: " << validIP << endl;
   address.sin_family = AF_INET;
   address.sin_addr.s_addr = inet_addr(validIP);
   address.sin_port = htons(this->serverPortNumber);
@@ -97,5 +97,6 @@ void ConnectCommand::sender() {
     }
     it = instance->indexToVarTable.begin();
   }
-  close(this->clientSocketNumber); // close the socket, reaches here only if we finished the thread.
+//  close(this->clientSocketNumber); // close the socket, reaches here only if we finished the thread.
+//  cout << "client_socket is now close" << endl;
 }

@@ -4,19 +4,13 @@
 
 #include "SleepCommand.h"
 #include "Singleton.h"
-/**
- * empty constructor.
- */
+
 SleepCommand::SleepCommand() {
 }
 
-/**
- * @param it described in Command.h.
- * @return described in Command.h.
- */
 int SleepCommand::execute(vector<string>::iterator it) {
   Singleton *instance = Singleton::getInstance();
-  string timeToSleep = *(it + 1); // time we need to sleep.
+  string timeToSleep = *(it + 1); // the time we need to sleep.
   Expression *exp;
   double time = 0;
   try {
@@ -26,6 +20,6 @@ int SleepCommand::execute(vector<string>::iterator it) {
     std::cout << e << std::endl;
   }
   chrono::milliseconds duration((int) time);
-  this_thread::sleep_for(duration);
+  this_thread::sleep_for(duration); // make this thread sleep.
   return 2;
 }

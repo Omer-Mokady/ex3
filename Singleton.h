@@ -12,31 +12,27 @@
 #include "Command.h"
 using namespace std;
 
-
 class Singleton {
  private:
 
   /* Here will be the instance stored. */
-  static Singleton* instance;
+  static Singleton *instance;
 
   /* Private constructor to prevent instancing. */
   Singleton();
 
  public:
-  map<int, Var*> indexToVarTable;
+  map<int, Var *> indexToVarTable;
   unordered_map<string, int> simToIndexTable;
-  unordered_map<string, pair <string, float>> symbolTable;
+  unordered_map<string, pair<string, float>> symbolTable;
   Interpreter *interpreter = new Interpreter();
-  unordered_map<string, Command*> commandsMap;
-  bool runTreads = true;
-
+  unordered_map<string, Command *> commandsMap;
+  bool runTreads = true; //runs the threads.
+  int clientSocketNumber; //runs the client socket.
+  int serverSocketNumber; //runs the server socket.
 
   /* Static access method. */
-  static Singleton* getInstance();
+  static Singleton *getInstance();
 };
-
-
-
-
 
 #endif //EX3_NEW__SINGLETON_H_

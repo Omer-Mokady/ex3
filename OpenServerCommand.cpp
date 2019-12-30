@@ -15,9 +15,7 @@ OpenServerCommand::OpenServerCommand() {
 }
 
 int OpenServerCommand::execute(vector<string>::iterator it) { //starting a thread where the server is listening on.
-//  cout << "OpenServerCommand execute check" << endl;
   string value = *(it + 1);
-//  cout << "value in iterator: " << value << endl;
   Expression *exp;
   Interpreter *i = new Interpreter();
   try {
@@ -32,13 +30,11 @@ int OpenServerCommand::execute(vector<string>::iterator it) { //starting a threa
   openServer.join(); //wait until someone (the simulator) will connect to the socket, and continue only afterward - therefore we need thread.join().
   thread listenThread([this] { listener(); }); // receiving data from simulator thread.
   listenThread.detach(); //read constantly, we wan it to run with the rest of the program - so we detach it.
-//  thread check([this] { mapValuesCheck(); });
-//  check.detach();
-//  cout << "done with open server threads." << endl;
   return 2; //return the number of elements + 1 to the parser.
 }
 
 int OpenServerCommand::openSocket() { //this thread is opening a server and wait for connection.
+  Singleton *instance = Singleton::getInstance();
   int socketfd = socket(AF_INET, SOCK_STREAM, 0);
   if (socketfd == -1) {
     cerr << "Could not create a socket" << endl;
@@ -66,7 +62,7 @@ int OpenServerCommand::openSocket() { //this thread is opening a server and wait
     return -4;
   }
   this->clientSocketNumber = client_socket;
-
+  instance->serverSocketNumber = client_socket;
   return 0;
 }
 
@@ -81,7 +77,6 @@ void OpenServerCommand::listener() { //this is the thread that actually listenin
   while (instance->runTreads) {
     char line[1024] = {0};
     read(socketNumber, line, 1024);
-//    cout << "received data: \n" << line << "\nvalues vector\n";
     string secondBuffer = line;
     firstBuffer = firstBuffer + secondBuffer;
     string firstToken = firstBuffer.substr(0, firstBuffer.find("\n")); // in firstToken we will have from start to \n.
@@ -89,7 +84,7 @@ void OpenServerCommand::listener() { //this is the thread that actually listenin
                                             firstBuffer.length()); // here we will have the string pass the \n.
     //separate firstToken by "," and update the the vector.
     stringstream ss(firstToken);
-    while (ss.good()) { //insert to vector while.
+    while (ss.good()) { //"insert to vector" while.
       string subStr;
       getline(ss, subStr, ',');
       Expression *exp;
@@ -104,7 +99,6 @@ void OpenServerCommand::listener() { //this is the thread that actually listenin
       *it = val;
       advance(it, 1);
     }
-
     //start of updating map and interpreter.
     it = flightValues.begin();
     mapIterator = instance->indexToVarTable.begin();
@@ -123,23 +117,15 @@ void OpenServerCommand::listener() { //this is the thread that actually listenin
         }
 
       }
-//      if (strcmp((*mapIterator).second->name.c_str(), "alt") == 0) {
-//        cout << "alt=" << (*mapIterator).second->value << endl;
-//      }
-//      cout << "after insertion: " << (*mapIterator).second->value << endl;
       advance(it, 1);
       advance(mapIterator, 1);
     }
-
-    //////////////////////////end of updating map.
-
+    //end of updating map.
     //reinitialize the iterators to begin.
     it = flightValues.begin();
     mapIterator = instance->indexToVarTable.begin();
 
-    firstBuffer = secondToken; //this is the last line of the loop - DO NOT CHANGE IT
-//    cout << "alt: " <<
+    firstBuffer = secondToken; //take what ever values found after the "\n" (if we found any)
   }
-  cout << "*****OPEN SERVER COMMAND THREAD IS OVER*****" << endl;
 }
 
