@@ -14,12 +14,5 @@ Var::Var(string sim1){
   this->name = "";
 }
 Var::Var(){
-//  this->value = 0;
   this->name = "";
-
-}
-
-
-void Var::setSim(string sim1) {
-  this->sim = sim1;
 }

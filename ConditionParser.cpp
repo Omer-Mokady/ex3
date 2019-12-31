@@ -7,45 +7,25 @@
 #include <iostream>
 using namespace std;
 
-//int ConditionParser::execute(vector<string>::iterator it) {
-//  string conditionType = *it;
-//  string condition = *(it+1);
-//  int counter = 3;
-//  while(*(it+counter)=="}") {
-//
-//
-//
-//  }
-//}
 list<Command *> ConditionParser::makeCommandList(vector<string>::iterator it) {
   int counter=3;
   list<Command *> listCommands;
   Command* c;
-
   Singleton* s = Singleton::getInstance();
   while(*(it+counter) != "}") {
-//    cout << "" << std::endl;
     if((*(it+counter) == ",") && (*(it+counter+1) != "}")) {
-
-//      cout << "we got command: " << *(it+counter+1) << std::endl;
-      // check if Command is not in the map
-//      cout << "command: " << *(it+counter+1) << endl;
-
       if(s->commandsMap.find(*(it+counter+1)) == s->commandsMap.end()){
         // check if it is not command, it's a var which is already exists.
         // error - command is invalid
         if(s->symbolTable.find(*(it+counter+1)) == s->symbolTable.end()) {
           cout << "command is invalid!! - error for:" << *(it+counter+1) << endl;
-
           break;
           // it's a var which is already exists.
         } else {
-          cout << "command: defineVar - for var: " << *(it+counter+1) << endl;
           c = s->commandsMap["var"];
         }
       // command is in the map
       } else {
-        cout << "command: " << *(it+counter+1) << endl;
         c = s->commandsMap.at(*(it+counter+1));
       }
       // insert to list
@@ -53,7 +33,6 @@ list<Command *> ConditionParser::makeCommandList(vector<string>::iterator it) {
     }
     counter++;
   }
-  cout << "finished to make CommandList for while" << endl;
   return listCommands;
 }
 bool ConditionParser::checkCondition(string condition) {
@@ -61,6 +40,7 @@ bool ConditionParser::checkCondition(string condition) {
   Expression *exp = nullptr;
   string leftStr, rightStr, startP;
   float left=0, right=0;
+  // check each expression with certai operator
   if(condition.find("<=") != std::string::npos) {
     leftStr = condition.substr(0, condition.find("<="));
     rightStr = condition.substr(condition.find("<=") + 2, condition.length()-(condition.find("<=")+2));
@@ -76,8 +56,6 @@ bool ConditionParser::checkCondition(string condition) {
     } catch (const char *e) {
       std::cout << e << std::endl;
     }
-    cout << "left: " << left << endl;
-    cout << "right: " << right << endl;
     return (left<=right);
   } else if(condition.find(">=") != std::string::npos) {
     leftStr = condition.substr(0, condition.find(">="));
@@ -95,8 +73,6 @@ bool ConditionParser::checkCondition(string condition) {
     } catch (const char *e) {
       std::cout << e << std::endl;
     }
-    cout << "left: " << left << endl;
-    cout << "right: " << right << endl;
     return (left>=right);
   } else if(condition.find("==") != std::string::npos) {
     leftStr = condition.substr(0, condition.find("=="));
@@ -114,8 +90,6 @@ bool ConditionParser::checkCondition(string condition) {
     } catch (const char *e) {
       std::cout << e << std::endl;
     }
-    cout << "left: " << left << endl;
-    cout << "right: " << right << endl;
     return (left==right);
   } else if(condition.find("!=") != std::string::npos) {
     leftStr = condition.substr(0, condition.find("!="));
@@ -133,8 +107,6 @@ bool ConditionParser::checkCondition(string condition) {
     } catch (const char *e) {
       std::cout << e << std::endl;
     }
-    cout << "left: " << left << endl;
-    cout << "right: " << right << endl;
     return (left!=right);
   } else if(condition.find("<") != std::string::npos) {
     leftStr = condition.substr(0, condition.find("<"));
@@ -152,8 +124,6 @@ bool ConditionParser::checkCondition(string condition) {
     } catch (const char *e) {
       std::cout << e << std::endl;
     }
-    cout << "left: " << left << endl;
-    cout << "right: " << right << endl;
     return (left<right);
   } else if(condition.find(">") != std::string::npos) {
     leftStr = condition.substr(0, condition.find(">"));
@@ -171,8 +141,6 @@ bool ConditionParser::checkCondition(string condition) {
     } catch (const char *e) {
       std::cout << e << std::endl;
     }
-    cout << "left: " << left << endl;
-    cout << "right: " << right << endl;
     return (left>right);
   }
 

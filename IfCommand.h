@@ -8,6 +8,9 @@
 
 class IfCommand : public ConditionParser {
  public:
+  /**
+   * constructor
+   */
   IfCommand();
   int execute(vector<string>::iterator);
 };

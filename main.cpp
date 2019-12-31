@@ -1,20 +1,15 @@
 #include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <algorithm>
 #include "Singleton.h"
 #include "Parser.h"
-#include <thread>
 #include <unistd.h>
 
 using namespace std;
 
-int main(int argc, char *argv[]) {
-
+int main(int, char *argv[]) {
+  // create first Singleton
   Singleton *s = Singleton::getInstance();
   Parser pars = Parser(argv[1]);
-  vector<string> lexer = pars.makeLexer(argv[1]);
+  // run the program
   pars.runParser();
   s->runTreads = false; //terminates the threads that send & receive messages to & from the simulator.
   close(s->clientSocketNumber); //close the client socket.

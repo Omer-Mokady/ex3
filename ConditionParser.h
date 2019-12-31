@@ -9,13 +9,19 @@
 
 class ConditionParser: public Command {
  protected:
+  /**
+   * making command list for the certain scope
+   * @return command list for the certain scope
+   */
   list<Command*> makeCommandList(vector<string>::iterator);
+  /**
+   * check equation's validation
+   * @param condition  string equation
+   * @return equation's validation
+   */
   bool checkCondition(string condition);
-
  public:
 //  virtual int execute(vector<string>::iterator);
-
-
 };
 
 #endif //EX3_NEW__CONDITIONPARSER_H_

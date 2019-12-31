@@ -18,8 +18,6 @@ int DefineVarCommand::execute(vector<string>::iterator it) {
   int index;
   Singleton* s = Singleton::getInstance();
   Expression *exp = nullptr;
-
-
   // var not exist in the symbolTable.
   if(*it == "var") {
     if(*(it+2)=="->" || *(it+2) == "<-") {
@@ -28,7 +26,6 @@ int DefineVarCommand::execute(vector<string>::iterator it) {
         sim=sim.substr(1,sim.length()-2);
       }
       s->symbolTable[*(it+1)]=pair<string,float>(sim,0);
-
       if(s->simToIndexTable.find(sim) == s->simToIndexTable.end()) {
           cout << "can't find on sim map, the sim: " << sim << endl;
       } else {
@@ -36,7 +33,6 @@ int DefineVarCommand::execute(vector<string>::iterator it) {
         s->indexToVarTable[s->simToIndexTable[sim]]->name = *(it + 1);
       }
       return 5;
-      //sim->index. index->var
     } else if(*(it+2)=="=") {
       // there is no sim!!
       strValue = *(it+3);
@@ -45,12 +41,8 @@ int DefineVarCommand::execute(vector<string>::iterator it) {
       strValue.erase(endP, strValue.end());
       // make string into float number
       try {
-//        Expression *exp = nullptr;
-        std::cout << "strValue is: " << strValue << std::endl;
-
         exp = s->interpreter->interpret(strValue);
         floatValue = exp->calculate();
-        std::cout << "floatValue is: " << floatValue << std::endl;
       } catch (const char *e) {
         std::cout << e << std::endl;
       }
@@ -63,15 +55,10 @@ int DefineVarCommand::execute(vector<string>::iterator it) {
   // var already exist in the symbolTable.
   } else {
     strName = *it;
-
-
-
-    // get value from somrething that exist.
+    // get value from something that exist.
     //check if it exist
     if(s->symbolTable.find(strName) == s->symbolTable.end()) {
-
       cout << "var isn't exists in the symbolTable Map" << endl;
-      //ff
     } else {
       if(*(it+1) == "=") {
         strValue = *(it+2);
@@ -80,7 +67,6 @@ int DefineVarCommand::execute(vector<string>::iterator it) {
         strValue.erase(endP, strValue.end());
         // get float value
         try {
-//        Expression *exp = nullptr;
           exp = s->interpreter->interpret(strValue);
           floatValue = exp->calculate();
         } catch (const char *e) {
@@ -97,7 +83,7 @@ int DefineVarCommand::execute(vector<string>::iterator it) {
         s->indexToVarTable[index]->hasUpdated = true;
         // update global iterpreter
         tempStr = strName + "=" + to_string(floatValue);
-        std::cout << "strName for interpreter is: "  << tempStr << std::endl;
+//        std::cout << "strName for interpreter is: "  << tempStr << std::endl;
         s->interpreter->setVariables(tempStr);
         return 3;
       } else if((*(it+1) == "->") || (*(it+1) == "<-")) {
@@ -106,7 +92,6 @@ int DefineVarCommand::execute(vector<string>::iterator it) {
           sim=sim.substr(1,sim.length()-2);
         }
         s->symbolTable[*(it+1)]=pair<string,float>(sim,0);
-
         if(s->simToIndexTable.find(sim) == s->simToIndexTable.end()) {
           cout << "can't find on sim map, the sim: " << sim << endl;
         } else {
@@ -116,18 +101,10 @@ int DefineVarCommand::execute(vector<string>::iterator it) {
           s->indexToVarTable[s->simToIndexTable[sim]]->name = *it;
           // new
           s->indexToVarTable[s->simToIndexTable[sim]]->hasUpdated = true;
-
         }
         return 4;
-
       }
-
     }
-
-
   }
-
-
-
   return 2;
 }

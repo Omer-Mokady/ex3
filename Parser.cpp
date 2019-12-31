@@ -4,13 +4,8 @@
 
 #include "Parser.h"
 #include "Command.h"
-#include "ConnectCommand.h"
-#include "OpenServerCommand.h"
-#include "DefineVarCommand.h"
 #include "Singleton.h"
-#include "PrintCommand.h"
 #include <iostream>
-#include <fstream>
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -44,6 +39,7 @@ vector<string> Parser::makeLexer(string address) {
   while(getline(fs,line)) {
     // sync every letter from  the certain line
     for (i = 0; i < line.length(); i++) {
+      // if we got the end of the scope
       if(line.at(i) == '}') {
         insideScope = false;
       }
@@ -63,7 +59,6 @@ vector<string> Parser::makeLexer(string address) {
         }
         // if the line is "while" type
       }
-
       if(line.find("while")==0) {
         insideScope = true;
         lexer.push_back("while");
@@ -108,7 +103,6 @@ vector<string> Parser::makeLexer(string address) {
         }
         // if we got "=" symbol on the line
       } else if(line.at(i) == '=') {
-
         if(i>0) {
           if(line.at(i) == '=' && (line.at(i-1) != ' ')) {
             cout << "no space before '='" << endl;
@@ -137,6 +131,7 @@ vector<string> Parser::makeLexer(string address) {
     if (!(tempStr.empty())) {
       lexer.push_back(tempStr);
     }
+    // check if we are still inside a scope
     if(insideScope) {
       lexer.push_back(",");
     }
@@ -146,95 +141,42 @@ vector<string> Parser::makeLexer(string address) {
   return lexer;
 }
 
-//unordered_map<string, Command*> Parser::initCommandMap() {
-//  unordered_map<string, Command*> commandsMap;
-//  Command* connectCommandV = new ConnectCommand();
-//  commandsMap["connectControlClient"] = connectCommandV;
-//  Command* OpenServerCommandV = new OpenServerCommand();
-//  commandsMap["openDataServer"] = OpenServerCommandV;
-//  Command* defineVarCommandV = new DefineVarCommand();
-//  commandsMap["var"] = defineVarCommandV;
-////  Command* printCommandV = new PrintCommand();
-////  commandsMap["Print"] = printCommandV;
-//  //insert sleepCommand
-//
-//
-//
-//  return commandsMap;
-//}
-
-
-
 void Parser::runParser() {
   unsigned int index=0;
-//  Singleton* s = Singleton::getInstance();
+  // make Lexer
   vector<string> lexer= makeLexer(this->addressFile);
-//  unordered_map<string, Command *> commandsMap = initCommandMap();
-//  string str1 = lexer[3];
-//  if(str1.at(0)=='"'&& str1.at(str1.length()-1)=='"') {
-////    cout << "to deleteeeee: " << str1 << endl;
-//    str1=str1.substr(1,str1.length()-2);
-////    cout << "new word" << str1 << endl;
-//
-//
-//  }
   Singleton* s = Singleton::getInstance();
-//  unordered_map<string, Command *>::iterator cMapIt;
   vector<string>::iterator it = lexer.begin();
-//  unordered_map<string, pair <string, float>>::iterator symbolTableIt = s->symbolTable.begin();;
-
-//  std::advance( it, index );
-//  /*
-int counter=0;
-
+  int counter=0;
+  // run over the Lexer values until the end of the lexer
   while(index<lexer.size()) {
     Command* c = nullptr;
-
-    // to delete:
     if(lexer[index] == "{" || lexer[index] == "}") {
       cout << lexer[index] << endl;
       index++;
       advance( it, 1 );
     }
-
+    // to deletr
     cout << lexer[index] << endl;
-
     // check if Command is not in the map
     if(s->commandsMap.find(lexer[index]) == s->commandsMap.end()){
       // check if it is not command, it's a var which is already exists.
       // error - command is invalid
       if(s->symbolTable.find(lexer[index]) == s->symbolTable.end()) {
         cout << "command is invalid" << endl;
-
-        break;
+        index++;
+        advance( it, 1 );
+        continue;
       // it's a var which is already exists.
       } else {
-//        cout << "var that already exists" << endl;
         c = s->commandsMap["var"];
       }
-
-
     } else {
-//      cout << "2" << endl;
-
       c = s->commandsMap.at(lexer[index]);
     }
-//    cout << "3" << endl;
-
+    // execute current command from the lexer
     counter=c->execute(it);
-//    cout << "4" << endl;
     index+=counter;
     advance( it, counter );
-
-
-//    cout << "iterator is: " << *it << endl;
-
-//    cout << "end index: " << index << endl;
-
   }
-//   */
-//  cout << "check" << endl;
-
-
-
 }

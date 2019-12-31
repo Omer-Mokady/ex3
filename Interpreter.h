@@ -15,23 +15,65 @@
 
   class Interpreter {
    private:
+  // variables map
     map<string, double> varMap;
    public:
+    /**
+     * set variables
+     * @param string1 new/updated variables
+     *
+    */
     void setVariables(string string1);
+    /**
+     * replace the variables by their value
+     * @param str expression string
+     * @return expression without variables, type Expression
+     */
     Expression *interpret(string str);
+    /**
+      * get Variable From String
+      * @param str string
+      * @return Variable
+      */
     string getVariableFromStr(string str);
+    /**
+     * get Value From String
+     * @param str string
+     * @return value
+     */
     double getValueFromStr(string str);
+    /**
+     * check Variable Vaildation
+     * @param tempStr variable
+     * @return boolean value - variables validation
+    */
     bool checkVariableVaildation(string tempStr);
+    /**
+     * check value Vaildation
+     * @param tempStr value
+     * @return boolean value - value validation
+     */
     bool checkValueVaildation(string tempStr);
+    /**
+     * get Value expression
+     * @param str Value constructor's argument
+     * @return Value expression
+     */
     Expression *getValueExp(string str);
+    /**
+     * get Variable expression
+     * @param str Variable constructor's argument
+     * @param num Variable constructor's argument
+     * @return Variable expression
+     */
     Expression *getVariableExp(string str, double num);
-
   };
 
   class Value : public Expression {
     double value;
 
    public:
+    // constructor
     Value(double num);
     double calculate() override;
   };
@@ -62,18 +104,21 @@
 
   class UPlus : public UnaryOperator {
    public:
+    // constructor
     UPlus(Expression *expression1);
     double calculate() override;
   };
 
   class UMinus : public UnaryOperator {
    public:
+    // constructor
     UMinus(Expression *expression1);
     double calculate() override;
   };
 
   class BinaryOperator : public Expression {
    protected:
+
     Expression *left{nullptr};
     Expression *right{nullptr};
     ~BinaryOperator();
@@ -81,153 +126,29 @@
 
   class Plus : public BinaryOperator {
    public:
+    // constructor
     Plus(Expression *left, Expression *right);
     double calculate() override;
   };
 
   class Minus : public BinaryOperator {
    public:
+    // constructor
     Minus(Expression *left, Expression *right);
     double calculate() override;
   };
 
   class Mul : public BinaryOperator {
    public:
+    // constructor
     Mul(Expression *left, Expression *right);
     double calculate() override;
   };
 
   class Div : public BinaryOperator {
    public:
+    // constructor
     Div(Expression *left, Expression *right);
     double calculate() override;
   };
-
-
-//
-// public:
-//  void setVariables(string expression);
-//  Expression *interpret(string expression);
-//  void createVars(string expression);
-//  int getStrength(string oper);
-// private:
-//  bool isOperator(char op);
-//  bool mathLegality(string(expression));
-//  bool isVariableExist(string toCheck);
-//  bool isVariableNameLegal(string expression);
-//  bool isValueLegal(string expression);
-//  bool isLegal(string expression); // check parenthesis.
-//  Expression *fromPostfix(queue<string>);
-//  map<string, double> variables;
-//};
-//
-//class Variable : public Expression {
-// public:
-//  Variable(string name, double value);
-//  Variable &operator++();
-//  Variable &operator++(int);
-//  Variable &operator--();
-//  Variable &operator--(int);
-//  Variable &operator+=(double);
-//  Variable &operator-=(double);
-//  double calculate() override;
-// private:
-//  string name;
-//  double value;
-//};
-//
-//class Value : public Expression {
-// public:
-//  Value(double val);
-//  double calculate();
-// private:
-//  double value;
-//};
-//
-////-------------------------------------------------UNARY---------------------------------------------------------
-//
-//
-///*
-// * class UnaryOperator
-// */
-//class UnaryOperator : public Expression {
-// public:
-//  virtual ~UnaryOperator() override {
-//    delete (this->exp);
-//  }
-// protected:
-//  Expression *exp;
-//};
-//
-///*
-// * class UPlus
-// */
-//class UPlus : public UnaryOperator {
-// public:
-//  UPlus(Expression *exp);
-//  double calculate();
-//};
-//
-///*
-// * class UMinus
-// */
-//class UMinus : public UnaryOperator {
-// public:
-//  UMinus(Expression *exp);
-//  double calculate();
-//};
-//
-////-------------------------------------------------BINARY---------------------------------------------------------
-//
-///*
-// * class BinaryOperator
-// */
-//
-//class BinaryOperator : public Expression {
-// public:
-//  virtual ~BinaryOperator() override {
-//    delete (this->leftExpression);
-//    delete (this->rightExpression);
-//  }
-// protected:
-//  Expression *rightExpression;
-//  Expression *leftExpression;
-//
-//};
-//
-///*
-// * class Plus
-// */
-//class Plus : public BinaryOperator {
-// public:
-//  Plus(Expression *left, Expression *right);
-//  double calculate();
-//};
-//
-///*
-// * class Plus
-// */
-//class Minus : public BinaryOperator {
-// public:
-//  Minus(Expression *left, Expression *right);
-//  double calculate();
-//};
-//
-///*
-// * class Mul
-// */
-//class Mul : public BinaryOperator {
-// public:
-//  Mul(Expression *left, Expression *right);
-//  double calculate();
-//};
-//
-///*
-// * class Div
-// */
-//class Div : public BinaryOperator {
-// public:
-//  Div(Expression *left, Expression *right);
-//  double calculate();
-//};
 #endif //EX3_NEW__INTERPRETER_H_

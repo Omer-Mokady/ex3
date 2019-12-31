@@ -8,6 +8,9 @@
 #include <iostream>
 class DefineVarCommand : public Command {
  public:
+  /**
+   * constructor
+   */
   DefineVarCommand();
   int execute(vector<string>::iterator);
 

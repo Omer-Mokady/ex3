@@ -9,21 +9,27 @@
 using namespace std;
 
 class Var {
- private:
-
  public:
+  // constructors
   Var(string name, string direction, string sim);
   Var(string sim);
   Var();
-
-
+  // sim
   string sim;
- string name;
+  //symbol name
+  string name;
+  // communication direction
   string direction;
- float value;
- bool hasValue = false;
- bool hasUpdated = false;
-
+  // value
+  float value;
+  // indicates if exist current value
+  bool hasValue = false;
+  // indicates if the value had updated lately
+  bool hasUpdated = false;
+  /**
+   * Setter
+   * @param sim1 sim
+   */
   void setSim(string sim1);
 };
 
