@@ -11,10 +11,22 @@
 #include "Interpreter.h"
 
 class SleepCommand : public Command {
-  ~SleepCommand() {};
-  int execute(vector<string>::iterator);
  public:
+  /**
+ * empty constructor.
+ */
   SleepCommand();
+  /**
+   * default distructor.
+   */
+  ~SleepCommand() {};
+  /**
+   * using the iterator, execute will make the current thread to sleep for it(=param) milliseconds.
+   * @param it described in Command.h.
+   * @return described in Command.h.
+   */
+  int execute(vector<string>::iterator it);
+
 };
 
 #endif //EX3_NEW__SLEEPCOMMAND_H_

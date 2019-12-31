@@ -7,18 +7,32 @@
 #include "Command.h"
 class OpenServerCommand : public Command {
  public:
+  /**
+  * empty constructor.
+  */
   OpenServerCommand();
-  int execute(vector<string>::iterator);
+  /**
+ * default distructor.
+ */
   ~OpenServerCommand() {};
+  /**
+* @param it described in Command.h.
+* @return described in Command.h.
+*/
+  int execute(vector<string>::iterator);
+  /**
+* a thread for opening socket for listening(as server). it will work as a blocking call.
+* @return -1, -2, -3 or -4 if something went wrong, 0 otherwise.
+*/
   int openSocket();
+  /**
+* a Thread for getting information from the simulator and updates the main singelton object with the data.
+* it is updating info only if we are looking on variable with direction "<-".
+*/
   void listener();
-  void mapValuesCheck();
-  void interpreterCheck();
  private:
-  int serverSocketNumber;
   int clientSocketNumber;
   int portNumber;
-  string ipNumber = "0.0.0.0";
 };
 
 #endif //EX3_NEW__OPENSERVERCOMMAND_H_

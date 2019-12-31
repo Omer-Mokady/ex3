@@ -4,22 +4,22 @@
 
 #include "SleepCommand.h"
 #include "Singleton.h"
-SleepCommand::SleepCommand() {
 
+SleepCommand::SleepCommand() {
 }
+
 int SleepCommand::execute(vector<string>::iterator it) {
   Singleton *instance = Singleton::getInstance();
-  cout << "in sleepCommand execute....." << endl;
-  string timeToSleep = *(it + 1);
+  string timeToSleep = *(it + 1); // the time we need to sleep.
   Expression *exp;
-  Interpreter *i = instance->interpreter;
+  double time = 0;
   try {
-    exp = i->interpret(timeToSleep);
-    int time = (int) exp->calculate();
-//    this_thread::sleep_for(chrono::milliseconds(time));
+    exp = instance->interpreter->interpret(timeToSleep);
+    time = exp->calculate();
   } catch (const char *e) {
     std::cout << e << std::endl;
   }
-  cout << "sleep command finished..." << endl;
+  chrono::milliseconds duration((int) time);
+  this_thread::sleep_for(duration); // make this thread sleep.
   return 2;
 }
