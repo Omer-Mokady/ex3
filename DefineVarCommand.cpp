@@ -31,9 +31,10 @@ int DefineVarCommand::execute(vector<string>::iterator it) {
 
       if(s->simToIndexTable.find(sim) == s->simToIndexTable.end()) {
           cout << "can't find on sim map, the sim: " << sim << endl;
+      } else {
+        s->indexToVarTable[s->simToIndexTable[sim]]->direction = *(it + 2);
+        s->indexToVarTable[s->simToIndexTable[sim]]->name = *(it + 1);
       }
-      s->indexToVarTable[s->simToIndexTable[sim]]->direction = *(it+2);
-      s->indexToVarTable[s->simToIndexTable[sim]]->name = *(it+1);
       return 5;
       //sim->index. index->var
     } else if(*(it+2)=="=") {
@@ -59,10 +60,12 @@ int DefineVarCommand::execute(vector<string>::iterator it) {
       s->interpreter->setVariables(tempStr);
       return 4;
     }
-  // var exist in the symbolTable.
+  // var already exist in the symbolTable.
   } else {
     strName = *it;
-    strValue = *(it+2);
+
+
+
     // get value from somrething that exist.
     //check if it exist
     if(s->symbolTable.find(strName) == s->symbolTable.end()) {
@@ -70,29 +73,55 @@ int DefineVarCommand::execute(vector<string>::iterator it) {
       cout << "var isn't exists in the symbolTable Map" << endl;
       //ff
     } else {
-      // remove spaces from string value
-      string::iterator endP = remove(strValue.begin(), strValue.end(), ' ');
-      strValue.erase(endP, strValue.end());
-      // get float value
-      try {
+      if(*(it+1) == "=") {
+        strValue = *(it+2);
+        // remove spaces from string value
+        string::iterator endP = remove(strValue.begin(), strValue.end(), ' ');
+        strValue.erase(endP, strValue.end());
+        // get float value
+        try {
 //        Expression *exp = nullptr;
-      exp = s->interpreter->interpret(strValue);
-      floatValue = exp->calculate();
-    } catch (const char *e) {
-      std::cout << e << std::endl;
-    }
-      sim = s->symbolTable[strName].first;
-      index = s->simToIndexTable[sim];
-      // insert value in symbolTable to "second" value;
-      s->symbolTable[strName].second = floatValue;
-      // insert  value to Var
-      s->indexToVarTable[index]->value = floatValue;
-      s->indexToVarTable[index]->hasValue = true;
-      // update global iterpreter
-      tempStr = strName + "=" + to_string(floatValue);
-      std::cout << "strName for interpreter is: "  << tempStr << std::endl;
-      s->interpreter->setVariables(tempStr);
-      return 3;
+          exp = s->interpreter->interpret(strValue);
+          floatValue = exp->calculate();
+        } catch (const char *e) {
+          std::cout << e << std::endl;
+        }
+        sim = s->symbolTable[strName].first;
+        index = s->simToIndexTable[sim];
+        // insert value in symbolTable to "second" value;
+        s->symbolTable[strName].second = floatValue;
+        // insert  value to Var
+        s->indexToVarTable[index]->value = floatValue;
+        s->indexToVarTable[index]->hasValue = true;
+        // new
+        s->indexToVarTable[index]->hasUpdated = true;
+        // update global iterpreter
+        tempStr = strName + "=" + to_string(floatValue);
+        std::cout << "strName for interpreter is: "  << tempStr << std::endl;
+        s->interpreter->setVariables(tempStr);
+        return 3;
+      } else if((*(it+1) == "->") || (*(it+1) == "<-")) {
+        sim = *(it + 3);
+        if(sim.at(0)=='"'&& sim.at(sim.length()-1)=='"') {
+          sim=sim.substr(1,sim.length()-2);
+        }
+        s->symbolTable[*(it+1)]=pair<string,float>(sim,0);
+
+        if(s->simToIndexTable.find(sim) == s->simToIndexTable.end()) {
+          cout << "can't find on sim map, the sim: " << sim << endl;
+        } else {
+          s->indexToVarTable[s->simToIndexTable[sim]]->direction = *(it+1);
+          s->indexToVarTable[s->simToIndexTable[sim]]->value = s->symbolTable[*it].second;
+          s->indexToVarTable[s->simToIndexTable[sim]]->hasValue = true;
+          s->indexToVarTable[s->simToIndexTable[sim]]->name = *it;
+          // new
+          s->indexToVarTable[s->simToIndexTable[sim]]->hasUpdated = true;
+
+        }
+        return 4;
+
+      }
+
     }
 
 
@@ -100,5 +129,5 @@ int DefineVarCommand::execute(vector<string>::iterator it) {
 
 
 
-  return 3;
+  return 2;
 }

@@ -22,6 +22,7 @@ class Var {
   string direction;
  float value;
  bool hasValue = false;
+ bool hasUpdated = false;
 
   void setSim(string sim1);
 };

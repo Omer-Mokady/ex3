@@ -14,11 +14,12 @@ WhileCommand::WhileCommand() {
 int WhileCommand::execute(vector<string>::iterator it) {
   Singleton* s = Singleton::getInstance();
   int counter = 3;
-  list<Command*> CommandList = makeCommandList(it);
   list<Command*>::iterator listItr;
 //  this->checkCondition(*(it+1));
-    cout << "list size: " << CommandList.size() << endl;
     while(checkCondition(*(it+1))) {
+      list<Command*> CommandList = makeCommandList(it);
+      cout << "list size: " << CommandList.size() << endl;
+
       cout << "start while from start" << endl;
       cout << "value in rpm" << s->indexToVarTable[35]->value << endl;
 

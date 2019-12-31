@@ -21,25 +21,31 @@ list<Command *> ConditionParser::makeCommandList(vector<string>::iterator it) {
   int counter=3;
   list<Command *> listCommands;
   Command* c;
+
   Singleton* s = Singleton::getInstance();
   while(*(it+counter) != "}") {
 //    cout << "" << std::endl;
     if((*(it+counter) == ",") && (*(it+counter+1) != "}")) {
+
 //      cout << "we got command: " << *(it+counter+1) << std::endl;
       // check if Command is not in the map
+//      cout << "command: " << *(it+counter+1) << endl;
+
       if(s->commandsMap.find(*(it+counter+1)) == s->commandsMap.end()){
         // check if it is not command, it's a var which is already exists.
         // error - command is invalid
         if(s->symbolTable.find(*(it+counter+1)) == s->symbolTable.end()) {
-          cout << "command is invalid!! - error" << endl;
+          cout << "command is invalid!! - error for:" << *(it+counter+1) << endl;
+
           break;
           // it's a var which is already exists.
         } else {
-          cout << "var that already exists" << endl;
+          cout << "command: defineVar - for var: " << *(it+counter+1) << endl;
           c = s->commandsMap["var"];
         }
       // command is in the map
       } else {
+        cout << "command: " << *(it+counter+1) << endl;
         c = s->commandsMap.at(*(it+counter+1));
       }
       // insert to list
@@ -47,7 +53,7 @@ list<Command *> ConditionParser::makeCommandList(vector<string>::iterator it) {
     }
     counter++;
   }
-  cout << "we found } sign" << endl;
+  cout << "finished to make CommandList for while" << endl;
   return listCommands;
 }
 bool ConditionParser::checkCondition(string condition) {

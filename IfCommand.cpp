@@ -10,11 +10,12 @@ IfCommand::IfCommand() {
 }
 int IfCommand::execute(vector<string>::iterator it) {
   int counter = 3;
-  list<Command*> CommandList = makeCommandList(it);
-  list<Command*>::iterator listItr;
-//  this->checkCondition(*(it+1));
-  cout << "list size: " << CommandList.size() << endl;
+
   if(checkCondition(*(it+1))) {
+    list<Command*> CommandList = makeCommandList(it);
+    list<Command*>::iterator listItr;
+//  this->checkCondition(*(it+1));
+    cout << "list size: " << CommandList.size() << endl;
     cout << "if is true. start from beginning" << endl;
 
     listItr = CommandList.begin();
@@ -41,11 +42,4 @@ int IfCommand::execute(vector<string>::iterator it) {
     stepsToEnd++;
   }
   return stepsToEnd+1;
-
-
-
-
-
-
-
 }

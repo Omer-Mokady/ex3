@@ -34,7 +34,8 @@ vector<string> Parser::makeLexer(string address) {
   ifstream fs;
   fs.open (address);
   string line, tempStr, separateSigns = " ,()\t";
-  int firstIndex=0, lastIndex=0, i=0;
+  int firstIndex=0;
+  unsigned int i = 0;
   vector<string> lexer;
   if(!fs){
     throw "can't open file";
@@ -47,10 +48,10 @@ vector<string> Parser::makeLexer(string address) {
         insideScope = false;
       }
       // if the line is "var" type
-      if(line.find("var")==0 && i+1<line.length()) {
+      if(line.find("var") == 0 && i+1<line.length()) {
         if ((line.at(i) == '<' && line.at(i + 1) == '-') || ((line.at(i) == '-' && line.at(i + 1) == '>'))) {
           // there is no 'space' before the arrow sign
-          if (firstIndex != i) {
+          if (unsigned (firstIndex) != i) {
             tempStr = line.substr(firstIndex, i - firstIndex);
             lexer.push_back(tempStr);
             firstIndex = i;
@@ -107,6 +108,16 @@ vector<string> Parser::makeLexer(string address) {
         }
         // if we got "=" symbol on the line
       } else if(line.at(i) == '=') {
+
+        if(i>0) {
+          if(line.at(i) == '=' && (line.at(i-1) != ' ')) {
+            cout << "no space before '='" << endl;
+            tempStr = line.substr(firstIndex, (i - firstIndex));
+            if (!(tempStr.empty())) {
+              lexer.push_back(tempStr);
+            }
+          }
+        }
         firstIndex = i+1;
         tempStr = deleteSpaces(line.substr(firstIndex, (line.length() - firstIndex)));
         lexer.push_back("=");
@@ -155,7 +166,7 @@ vector<string> Parser::makeLexer(string address) {
 
 
 void Parser::runParser() {
-  int index=0;
+  unsigned int index=0;
 //  Singleton* s = Singleton::getInstance();
   vector<string> lexer= makeLexer(this->addressFile);
 //  unordered_map<string, Command *> commandsMap = initCommandMap();
