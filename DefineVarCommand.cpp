@@ -26,8 +26,14 @@ int DefineVarCommand::execute(vector<string>::iterator it) {
         sim=sim.substr(1,sim.length()-2);
       }
       s->symbolTable[*(it+1)]=pair<string,float>(sim,0);
+      // if sim is not exist already on our maps
       if(s->simToIndexTable.find(sim) == s->simToIndexTable.end()) {
           cout << "can't find on sim map, the sim: " << sim << endl;
+          int tempNum = s->indexToVarTable.size();
+        s->simToIndexTable[sim]= tempNum;
+        s->indexToVarTable[tempNum]= new Var(sim);
+        s->indexToVarTable[tempNum]->name = *(it + 1);
+        s->indexToVarTable[tempNum]->direction = *(it + 2);
       } else {
         s->indexToVarTable[s->simToIndexTable[sim]]->direction = *(it + 2);
         s->indexToVarTable[s->simToIndexTable[sim]]->name = *(it + 1);
