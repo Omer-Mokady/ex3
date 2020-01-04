@@ -28,7 +28,9 @@ In the server side we recieved and maintained flight data given to us from the s
 
 In the client side we updated the simulator based on the instructions found in the given file.
 
-both sockets and the data manegment runs along the program side by side using multy threading and singelton design pattern.
+Both sockets and the data manegment runs along the program side by side using multy threading and singelton design pattern.
+
+We also implemented Command pattern to controll all possible commands, and the composite design pattern to maintain the parser that runs the whole flow of the program. 
 #
 __Goals__
 
