@@ -27,27 +27,27 @@ vector<string> Parser::makeLexer(string address) {
   bool commasFlag = false;
   bool insideScope = false;
   ifstream fs;
-  fs.open (address);
+  fs.open(address);
   string line, tempStr, separateSigns = " ,()\t";
-  int firstIndex=0;
+  int firstIndex = 0;
   unsigned int i = 0;
   vector<string> lexer;
-  if(!fs){
+  if (!fs) {
     throw "can't open file";
   }
   // sync every line of the file
-  while(getline(fs,line)) {
+  while (getline(fs, line)) {
     // sync every letter from  the certain line
     for (i = 0; i < line.length(); i++) {
       // if we got the end of the scope
-      if(line.at(i) == '}') {
+      if (line.at(i) == '}') {
         insideScope = false;
       }
       // if the line is "var" type
-      if(line.find("var") == 0 && i+1<line.length()) {
+      if (line.find("var") == 0 && i + 1 < line.length()) {
         if ((line.at(i) == '<' && line.at(i + 1) == '-') || ((line.at(i) == '-' && line.at(i + 1) == '>'))) {
           // there is no 'space' before the arrow sign
-          if (unsigned (firstIndex) != i) {
+          if (unsigned(firstIndex) != i) {
             tempStr = line.substr(firstIndex, i - firstIndex);
             lexer.push_back(tempStr);
             firstIndex = i;
@@ -59,12 +59,12 @@ vector<string> Parser::makeLexer(string address) {
         }
         // if the line is "while" type
       }
-      if(line.find("while")==0) {
+      if (line.find("while") == 0) {
         insideScope = true;
         lexer.push_back("while");
-        firstIndex=5;
+        firstIndex = 5;
         tempStr = deleteSpaces(line.substr(firstIndex, (line.length() - firstIndex)));
-        if(tempStr.at(tempStr.length()-1) == '{') {
+        if (tempStr.at(tempStr.length() - 1) == '{') {
           tempStr = tempStr.substr(0, (tempStr.length() - 1));
           lexer.push_back(tempStr);
           // don't push "{" to vector. it will happend in the end of the for loop
@@ -73,7 +73,7 @@ vector<string> Parser::makeLexer(string address) {
         }
       }
       // if the line is "while" type
-      if(line.find("if")==0) {
+      if (line.find("if") == 0) {
         insideScope = true;
         lexer.push_back("if");
         firstIndex = 2;
@@ -87,32 +87,31 @@ vector<string> Parser::makeLexer(string address) {
         }
       }
       // if we got a quote
-      if(line.at(i) == '"') {
+      if (line.at(i) == '"') {
         // if it's the opening commas
-        if(commasFlag == false) {
+        if (commasFlag == false) {
           commasFlag = true;
           firstIndex = i;
           continue;
           // if it's the closing commas
         } else {
           commasFlag = false;
-          tempStr = line.substr(firstIndex, i-firstIndex+1);
+          tempStr = line.substr(firstIndex, i - firstIndex + 1);
           lexer.push_back(tempStr);
-          firstIndex = i+1;
+          firstIndex = i + 1;
           continue;
         }
         // if we got "=" symbol on the line
-      } else if(line.at(i) == '=') {
-        if(i>0) {
-          if(line.at(i) == '=' && (line.at(i-1) != ' ')) {
-            cout << "no space before '='" << endl;
+      } else if (line.at(i) == '=') {
+        if (i > 0) {
+          if (line.at(i) == '=' && (line.at(i - 1) != ' ')) {
             tempStr = line.substr(firstIndex, (i - firstIndex));
             if (!(tempStr.empty())) {
               lexer.push_back(tempStr);
             }
           }
         }
-        firstIndex = i+1;
+        firstIndex = i + 1;
         tempStr = deleteSpaces(line.substr(firstIndex, (line.length() - firstIndex)));
         lexer.push_back("=");
         lexer.push_back(tempStr);
@@ -132,7 +131,7 @@ vector<string> Parser::makeLexer(string address) {
       lexer.push_back(tempStr);
     }
     // check if we are still inside a scope
-    if(insideScope) {
+    if (insideScope) {
       lexer.push_back(",");
     }
     firstIndex = 0;
@@ -142,32 +141,28 @@ vector<string> Parser::makeLexer(string address) {
 }
 
 void Parser::runParser() {
-  unsigned int index=0;
+  unsigned int index = 0;
   // make Lexer
-  vector<string> lexer= makeLexer(this->addressFile);
-  Singleton* s = Singleton::getInstance();
+  vector<string> lexer = makeLexer(this->addressFile);
+  Singleton *s = Singleton::getInstance();
   vector<string>::iterator it = lexer.begin();
-  int counter=0;
+  int counter = 0;
   // run over the Lexer values until the end of the lexer
-  while(index<lexer.size()) {
-    Command* c = nullptr;
-    if(lexer[index] == "{" || lexer[index] == "}") {
-      cout << lexer[index] << endl;
+  while (index < lexer.size()) {
+    Command *c = nullptr;
+    if (lexer[index] == "{" || lexer[index] == "}") {
       index++;
-      advance( it, 1 );
+      advance(it, 1);
     }
-    // to deletr
-    cout << lexer[index] << endl;
     // check if Command is not in the map
-    if(s->commandsMap.find(lexer[index]) == s->commandsMap.end()){
+    if (s->commandsMap.find(lexer[index]) == s->commandsMap.end()) {
       // check if it is not command, it's a var which is already exists.
       // error - command is invalid
-      if(s->symbolTable.find(lexer[index]) == s->symbolTable.end()) {
-        cout << "command is invalid" << endl;
+      if (s->symbolTable.find(lexer[index]) == s->symbolTable.end()) {
         index++;
-        advance( it, 1 );
+        advance(it, 1);
         continue;
-      // it's a var which is already exists.
+        // it's a var which is already exists.
       } else {
         c = s->commandsMap["var"];
       }
@@ -175,8 +170,8 @@ void Parser::runParser() {
       c = s->commandsMap.at(lexer[index]);
     }
     // execute current command from the lexer
-    counter=c->execute(it);
-    index+=counter;
-    advance( it, counter );
+    counter = c->execute(it);
+    index += counter;
+    advance(it, counter);
   }
 }

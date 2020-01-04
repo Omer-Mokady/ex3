@@ -9,9 +9,22 @@
 #include <string>
 class PrintCommand : public Command {
  public:
+  /**
+   * empty constructor.
+   */
   PrintCommand();
+  /**
+   * default distructor.
+   */
   ~PrintCommand() {};
-  int execute(vector<string>::iterator);
+  /**
+   * gets a string or expression from the fly.txt file.
+   * if it's a string - printing it.
+   * if it's an expression - interpreting it and than printing it.
+   * @param it described in Command.h.
+   * @return described in Command.h.
+   */
+  int execute(vector<string>::iterator it);
 };
 
 #endif //EX3_NEW__PRINTCOMMAND_H_

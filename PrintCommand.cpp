@@ -12,12 +12,10 @@ PrintCommand::PrintCommand() {
 }
 int PrintCommand::execute(vector<string>::iterator it) {
   Singleton *instance = Singleton::getInstance(); // contains maps and boolean key for threads.
-  cout << "in PrintCommand execute....." << endl;
   string msgToPrint = *(it + 1);
   if (msgToPrint.at(0) == '"' && msgToPrint.at(msgToPrint.length() - 1) == '"') { // *(it+1) = "string", print it.
     msgToPrint = msgToPrint.substr(1, msgToPrint.length() - 2);
     cout << msgToPrint << endl;
-
   } else { //we have an expression we want to print - calculate it.
     string value = *(it + 1);
     Expression *exp = nullptr;

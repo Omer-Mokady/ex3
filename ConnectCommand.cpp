@@ -10,6 +10,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include "Singleton.h"
+#include <unistd.h>
 
 /**
  * empty constructor.
@@ -72,7 +73,9 @@ void ConnectCommand::sender() {
   it = instance->indexToVarTable.begin();
   while (instance->runTreads) { // run as long as the boolean Singleton flag is true.
     while (it != instance->indexToVarTable.end()) { // iterate all over the singleton map.
-      if (strcmp((*it).second->direction.c_str(), "->") == 0 && (*it).second->hasValue == true) { // check direction.
+      if (strcmp((*it).second->direction.c_str(), "->") == 0 && (*it).second->hasValue == true
+          && (*it).second->hasUpdated == true) {
+        (*it).second->hasValue = false;
         ostringstream valueToSend;
         valueToSend << (*it).second->value; // turning the float value to string stream.
         string setCommand = "set ";
@@ -85,18 +88,19 @@ void ConnectCommand::sender() {
         final_message.append(sim); // path
         final_message.append(whiteSpace); // " "
         final_message.append(valueAsStr); // "value\r\n"
-        char msg[final_message.length() + 1]; // finally - creating the format "set /path/.../ value\r\n" to send.
+        char *msg = new char[final_message.length() + 1];
         strcpy(msg, final_message.c_str());
         int is_send =
             send(this->clientSocketNumber, msg, strlen(msg), 0); // trying to send the message to the simulator.
         if (is_send == -1) {
-          cout << "Error sending message." << endl;
+          if (instance->runTreads) {
+            cout << "Error in sending message." << endl;
+          }
         }
+        delete[] msg;
       }
       advance(it, 1);
     }
     it = instance->indexToVarTable.begin();
   }
-//  close(this->clientSocketNumber); // close the socket, reaches here only if we finished the thread.
-//  cout << "client_socket is now close" << endl;
 }

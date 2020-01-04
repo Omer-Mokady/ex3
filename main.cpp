@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
   // create first Singleton
   Singleton *s = Singleton::getInstance();
   try {
-    if(argc<2) {
+    if (argc < 2) {
       throw "error - there is no arguments";
     }
     Parser pars = Parser(argv[1]);
@@ -18,7 +18,6 @@ int main(int argc, char *argv[]) {
     s->runTreads = false; //terminates the threads that send & receive messages to & from the simulator.
     close(s->clientSocketNumber); //close the client socket.
     close(s->serverSocketNumber); //close the server socket.
-    cout << "end of main" << endl;
   } catch (const char *e) {
     std::cout << e << std::endl;
   }
